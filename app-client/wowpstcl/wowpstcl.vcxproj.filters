@@ -33,6 +33,18 @@
     <ClInclude Include="CDBEngenie.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="sqlite3\sqlite3.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="addairplaneDlg.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="CDictionaryTable.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="CAircraftTable.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wowpstcl.cpp">
@@ -45,6 +57,15 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="CDBEngenie.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="addairplaneDlg.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="CDictionaryTable.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="CAircraftTable.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,6 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\wowpstcl.ico">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="res\toolbar_main.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>

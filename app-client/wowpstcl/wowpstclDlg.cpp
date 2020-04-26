@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "CDBEngenie.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -51,9 +52,10 @@ END_MESSAGE_MAP()
 
 
 CwowpstclDlg::CwowpstclDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_WOWPSTCL_DIALOG, pParent)
+	: CDialogEx(IDD_MAIN, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	
 }
 
 void CwowpstclDlg::DoDataExchange(CDataExchange* pDX)
@@ -68,6 +70,9 @@ BEGIN_MESSAGE_MAP(CwowpstclDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_SIZING()
+	ON_WM_SHOWWINDOW()
+	ON_COMMAND(ID_BUTTON_FILTER, &CwowpstclDlg::OnButtonFilter)
+	ON_COMMAND(ID_BUTTON_ADD, &CwowpstclDlg::OnButtonAdd)
 END_MESSAGE_MAP()
 
 
@@ -97,23 +102,23 @@ BOOL CwowpstclDlg::OnInitDialog()
 		}
 	}
 
+	m_Toolbar.Create(this);
+	m_Toolbar.LoadToolBar(IDR_TOOLBAR_MAIN);
+	m_Toolbar.ShowWindow(SW_SHOW);
+	//m_Toolbar.SetBarStyle(CBRS_ALIGN_TOP | CBRS_TOOLTIPS | CBRS_FLYBY);
+	RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
+
 	// Задает значок для этого диалогового окна.  Среда делает это автоматически,
 	//  если главное окно приложения не является диалоговым
 	SetIcon(m_hIcon, TRUE);			// Крупный значок
 	SetIcon(m_hIcon, FALSE);		// Мелкий значок
 
-	// TODO: добавьте дополнительную инициализацию
+	// TODO: добавьте дополнительную инициализацию	
 	CDBEngenie::getInstance().InitializeDatabase(); //Init database engenie
-	const char *dbvername = CDBEngenie::getInstance().GetDatabaseVersion();
-	if (dbvername != NULL)
-	{
-		OutputDebugString(_T("Get version"));
-		this->m_AircraftInfo.SetWindowText(CString(dbvername));
-	}
-	else
-	{
-		OutputDebugString(_T("Unable to get version"));
-	}
+	m_DlgAddAirplane.LoadDictionaries();
+	RefreshAircraftList();
+
+
 
 	return TRUE;  // возврат значения TRUE, если фокус не передан элементу управления
 }
@@ -177,15 +182,15 @@ void CwowpstclDlg::OnSizing(UINT fwSide, LPRECT pRect)
 	m_AircraftList.GetWindowRect(oldlistrect);
 	m_AircraftInfo.GetWindowRect(oldinforect);
 
-	m_AircraftList.SetWindowPos(NULL, 10, 30, oldlistrect->right - oldlistrect->left , pRect->bottom - pRect->top - 70, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
-	m_AircraftInfo.SetWindowPos(NULL, 10, 30, pRect->right - oldinforect->left - 20, pRect->bottom - pRect->top - 70, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+	m_AircraftList.SetWindowPos(NULL, 10, 30, oldlistrect->right - oldlistrect->left , pRect->bottom - pRect->top - 110, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+	m_AircraftInfo.SetWindowPos(NULL, 10, 30, pRect->right - oldinforect->left - 20, pRect->bottom - pRect->top - 110, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 
 	// TODO: добавьте свой код обработчика сообщений
 	delete oldlistrect;
 	delete oldinforect;
 	
 
-	this->RefreshAircraftList();
+
 }
 
 
@@ -194,8 +199,32 @@ void CwowpstclDlg::RefreshAircraftList()
 {
 	// TODO: Добавьте сюда код реализации.
 
-	m_AircraftList.ResetContent();
+	m_AircraftTable.SelectAll();
+	m_AircraftTable.AssociateWithVisualComponent(m_AircraftList);
 	
 	//TODO: Perform request to database 
 
+}
+
+
+void CwowpstclDlg::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CDialogEx::OnShowWindow(bShow, nStatus);
+}
+
+
+void CwowpstclDlg::OnButtonFilter()
+{
+	// TODO: добавьте свой код обработчика команд
+	OutputDebugString(_T("OnButtonFilter\n"));
+	
+}
+
+
+void CwowpstclDlg::OnButtonAdd()
+{
+	// TODO: добавьте свой код обработчика команд	
+	//m_DlgAddAirplane.FillAirClasses();
+	m_DlgAddAirplane.DoModal();
+	RefreshAircraftList();
 }
