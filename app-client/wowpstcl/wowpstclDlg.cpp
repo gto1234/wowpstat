@@ -7,6 +7,7 @@
 #include "wowpstclDlg.h"
 #include "afxdialogex.h"
 #include "CDBEngenie.h"
+#include "CAircraftTable.h"
 
 
 #ifdef _DEBUG
@@ -73,6 +74,7 @@ BEGIN_MESSAGE_MAP(CwowpstclDlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
 	ON_COMMAND(ID_BUTTON_FILTER, &CwowpstclDlg::OnButtonFilter)
 	ON_COMMAND(ID_BUTTON_ADD, &CwowpstclDlg::OnButtonAdd)
+	ON_LBN_SELCHANGE(IDC_LIST1, &CwowpstclDlg::OnAircraftListChangeSelectedItem)
 END_MESSAGE_MAP()
 
 
@@ -117,6 +119,7 @@ BOOL CwowpstclDlg::OnInitDialog()
 	CDBEngenie::getInstance().InitializeDatabase(); //Init database engenie
 	m_DlgAddAirplane.LoadDictionaries();
 	RefreshAircraftList();
+	OnAircraftListChangeSelectedItem();
 
 
 
@@ -217,14 +220,47 @@ void CwowpstclDlg::OnButtonFilter()
 {
 	// TODO: добавьте свой код обработчика команд
 	OutputDebugString(_T("OnButtonFilter\n"));
-	
+
 }
 
 
 void CwowpstclDlg::OnButtonAdd()
 {
 	// TODO: добавьте свой код обработчика команд	
-	//m_DlgAddAirplane.FillAirClasses();
 	m_DlgAddAirplane.DoModal();
 	RefreshAircraftList();
+}
+
+
+void CwowpstclDlg::OnAircraftListChangeSelectedItem()
+{	
+	int nListBoxIndex = m_AircraftList.GetCurSel();
+
+	if (nListBoxIndex == LB_ERR) 
+		return;
+
+	/*CString ItemSelected;
+	m_AircraftList.GetText(nListBoxIndex, ItemSelected);
+	AfxMessageBox(ItemSelected);*/
+
+	CAircraftTable::TableContent CurrentAircraft;
+
+	if (m_AircraftTable.GetAircraft(nListBoxIndex, CurrentAircraft) == true)
+	{
+		std::string TechKind = CurrentAircraft.premium == "0" ? "Линейная" : "Премиумная";
+
+		std::string s = 
+			"Самолёт: " + CurrentAircraft.name + "\r\n" +
+			"Класс: " + CurrentAircraft.air_class + "\r\n" +
+			"Нация: " + CurrentAircraft.nation + "\r\n" +
+			"Уровень: " + CurrentAircraft.level + "\r\n" +
+			"Эра: " + CurrentAircraft.era + "\r\n" +
+			"Вид техники: " + TechKind + "\r\n";
+
+		m_AircraftInfo.SetWindowText(CString(s.c_str()));
+	}
+	
+
+
+
 }

@@ -49,4 +49,5 @@ public:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnButtonFilter();
 	afx_msg void OnButtonAdd();
+	afx_msg void OnAircraftListChangeSelectedItem();
 };

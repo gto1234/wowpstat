@@ -6,6 +6,7 @@
 
 class CAircraftTable
 {
+public:
 	struct TableContent
 	{
 		std::string id;
@@ -16,18 +17,22 @@ class CAircraftTable
 		std::string name;
 		std::string premium;
 	};
-
+private:
 	struct VisualComponentIndexation
 	{
 		int component_index;
-		std::string table_id;
+		std::string db_table_id;
+		int TableContent_id;
 	};
 
 public:
 	void AssociateWithVisualComponent(CListBox &);
 	void SelectAll();
-	std::string GetIDbyVisualComponentIndex(int VisualComponentIndex);
+	std::string GetID_DBbyVisualComponentIndex(int VisualComponentIndex);
+	bool GetAircraft(int VisualComponentIndex, CAircraftTable::TableContent&);
+	
 private:
+	int GetID_TableContentbyVisualComponentIndex(int VisualComponentIndex);
 	std::vector<TableContent> table_content;
 	std::vector<VisualComponentIndexation> visual_component_indexer;
 

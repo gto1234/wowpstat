@@ -7,6 +7,8 @@ void CAircraftTable::AssociateWithVisualComponent(CListBox &VisualComponent)
 	VisualComponent.ResetContent();
 	visual_component_indexer.clear();
 
+
+	int nCurrentIndexInVector = 0; //TODO: Very bad!!!
 	for (const auto& it : table_content)
 	{
 		int res = VisualComponent.AddString(CString(it.name.c_str()));
@@ -14,8 +16,10 @@ void CAircraftTable::AssociateWithVisualComponent(CListBox &VisualComponent)
 		{
 			VisualComponentIndexation index_node;
 			index_node.component_index = res;
-			index_node.table_id = it.id;
+			index_node.db_table_id = it.id;
+			index_node.TableContent_id = nCurrentIndexInVector;
 			visual_component_indexer.emplace_back(index_node);
+			nCurrentIndexInVector++;
 		}
 	}
 
@@ -60,16 +64,38 @@ void CAircraftTable::SelectAll()
 	OutputDebugString(_T(__FUNCSIG__" ended\n"));
 }
 
-std::string CAircraftTable::GetIDbyVisualComponentIndex(int VisualComponentIndex)
+std::string CAircraftTable::GetID_DBbyVisualComponentIndex(int VisualComponentIndex)
 {
 	for (const auto& it : visual_component_indexer)
 	{
 		if (it.component_index == VisualComponentIndex)
 		{
-			return  it.table_id;
+			return  it.db_table_id;
 		}
 	}
 	return "";
+}
+
+bool CAircraftTable::GetAircraft(int VisualComponentIndex, CAircraftTable::TableContent& requested_aircraft)
+{	
+	int AircraftIndex = GetID_TableContentbyVisualComponentIndex(VisualComponentIndex);
+	if (AircraftIndex < 0) return false;
+
+	requested_aircraft = table_content[AircraftIndex];
+
+	return true;
+}
+
+int CAircraftTable::GetID_TableContentbyVisualComponentIndex(int VisualComponentIndex)
+{
+	for (const auto& it : visual_component_indexer)
+	{
+		if (it.component_index == VisualComponentIndex)
+		{
+			return  it.TableContent_id;
+		}
+	}	
+	return -1;
 }
 
 void CAircraftTable::AddAirCraft(std::string air_class, std::string nation, std::string level, std::string aircraft_name, bool premium)
